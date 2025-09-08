@@ -15,7 +15,7 @@ namespace Pong
             graphics.PreferredBackBufferWidth = Globals.windowSize.X;
             graphics.PreferredBackBufferHeight = Globals.windowSize.Y;
 
-            Window.Title = "Pong - 5463947 & .......";
+            Window.Title = "Pong - 5463947 & 9392998";
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
