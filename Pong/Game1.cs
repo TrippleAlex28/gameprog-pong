@@ -6,14 +6,14 @@ namespace Pong
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager graphics;
+        private GraphicsDeviceManager _graphics;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = Globals.bFullScreen;
-            graphics.PreferredBackBufferWidth = Globals.windowSize.X;
-            graphics.PreferredBackBufferHeight = Globals.windowSize.Y;
+            _graphics = new GraphicsDeviceManager(this);
+            _graphics.IsFullScreen = Globals.isFullScreen;
+            _graphics.PreferredBackBufferWidth = Globals.windowSize.X;
+            _graphics.PreferredBackBufferHeight = Globals.windowSize.Y;
 
             Window.Title = "Pong - 5463947 & 9392998";
 
@@ -21,17 +21,12 @@ namespace Pong
             IsMouseVisible = true;
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-        }
-
         protected override void LoadContent()
         {
             Globals.spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle.png");
-            Globals.ballTexture = Content.Load<Texture2D>("sprites/ball.png");
+            Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
+            Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
         }
 
         protected override void Update(GameTime gameTime)

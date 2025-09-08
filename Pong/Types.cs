@@ -1,19 +1,19 @@
 namespace Pong
 {
-  enum GameState
+  public enum GameState
   {
     MainMenu,
     InGame,
     GameOver,
   }
 
-  enum GameType
+  public enum GameType
   {
     TwoPlayer,
     FourPlayer,
   }
 
-  enum PaddleMovementDirection
+  public enum PaddleMovementDirection
   {
     Horizontal,
     Vertical

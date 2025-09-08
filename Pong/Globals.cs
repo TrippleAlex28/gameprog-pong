@@ -6,7 +6,7 @@ namespace Pong
 {
   class Globals
   {
-    public static bool bFullScreen = false;
+    public static bool isFullScreen = false;
     public static Point windowSize = new Point(640, 480);
 
     public static SpriteBatch spriteBatch;
