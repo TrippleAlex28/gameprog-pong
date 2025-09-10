@@ -16,6 +16,6 @@ namespace Pong
   public enum PaddleMovementDirection
   {
     Horizontal,
-    Vertical
+    Vertical,
   }
 }

@@ -8,8 +8,7 @@ namespace Pong
   {
     public static bool isFullScreen = false;
     public static Point windowSize = new Point(640, 480);
-
-    public static SpriteBatch spriteBatch;
+    
     public static Texture2D paddleTexture;
     public static Texture2D ballTexture;
     public static SpriteFont font;
@@ -30,8 +29,8 @@ namespace Pong
       Color.Pink
     ];
 
-    public static Point paddleSize = new Point(8, 48);
-    public static short ballSize = 24;
+    public static readonly Point paddleSize = new Point(8, 48);
+    public const short ballSize = 24;
 
     // Speed is measured in pixels per second
     public static short paddleSpeed = 256;

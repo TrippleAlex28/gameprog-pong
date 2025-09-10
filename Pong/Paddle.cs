@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Pong
@@ -40,9 +41,11 @@ namespace Pong
       currentPos = MathHelper.Clamp(currentPos, 0, 100); // TODO: Clamp to field bounds
     }
 
-    public void Draw(GameTime gameTime)
+    public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
-      Globals.spriteBatch.Draw(Globals.paddleTexture, new Rectangle(new Point(0), Globals.paddleSize), paddleColor);
+      spriteBatch.Begin();
+      spriteBatch.Draw(Globals.paddleTexture, new Rectangle(new Point(0), Globals.paddleSize), paddleColor);
+      spriteBatch.End();
     }
   }
 }
