@@ -6,15 +6,15 @@ namespace Pong
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
+        public GraphicsDeviceManager graphics;
         private SpriteBatch _spriteBatch;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.IsFullScreen = Globals.isFullScreen;
-            _graphics.PreferredBackBufferWidth = Globals.windowSize.X;
-            _graphics.PreferredBackBufferHeight = Globals.windowSize.Y;
+            graphics = new GraphicsDeviceManager(this);
+            graphics.IsFullScreen = false;
+            graphics.PreferredBackBufferWidth = 640;
+            graphics.PreferredBackBufferHeight = 480;
 
             Window.Title = "Pong - 5463947 & 9392998";
 
@@ -108,8 +108,8 @@ namespace Pong
         private void DrawStringOnCenter(string text)
         {
             Vector2 position =
-                new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
-                    _graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
+                new Vector2(graphics.GraphicsDevice.Viewport.Width / 2f,
+                    graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
             _spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
         }
     }

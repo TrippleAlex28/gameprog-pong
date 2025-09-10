@@ -6,9 +6,6 @@ namespace Pong
 {
   class Globals
   {
-    public static bool isFullScreen = false;
-    public static Point windowSize = new Point(640, 480);
-    
     public static Texture2D paddleTexture;
     public static Texture2D ballTexture;
     public static SpriteFont font;
