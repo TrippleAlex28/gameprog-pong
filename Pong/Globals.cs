@@ -12,16 +12,17 @@ namespace Pong
     public static SpriteBatch spriteBatch;
     public static Texture2D paddleTexture;
     public static Texture2D ballTexture;
+    public static SpriteFont font;
 
     public static GameState gameState = GameState.MainMenu;
     public static GameType gameType;
 
-    public static Keys continueKey = Keys.Space;
-    public static Keys resetKey = Keys.R;
+    public const Keys continueKey = Keys.Space;
+    public const Keys resetKey = Keys.R;
 
-    public static Color backgroundColor = Color.Black;
+    public static Color backgroundColor = Color.White;
     // public static Texture2D backgroundTexture;
-    public static Color textColor = Color.White;
+    public static Color textColor = Color.Black;
     public static Color[] playerColors = [
       Color.Blue,
       Color.Red,

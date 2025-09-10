@@ -27,6 +27,7 @@ namespace Pong
 
             Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
             Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
+            Globals.font = Content.Load<SpriteFont>("default_font");
         }
 
         protected override void Update(GameTime gameTime)
@@ -82,8 +83,9 @@ namespace Pong
         }
         private void DrawMainMenu(GameTime gameTime)
         {
-
+            DrawStringOnCenter("Welkom bij PONG! Druk op <SPACE> om te beginnen!");
         }
+
         private void UpdateInGame(GameTime gameTime)
         {
 
@@ -99,6 +101,14 @@ namespace Pong
         private void DrawGameOver(GameTime gameTime)
         {
 
+        }
+        
+        private void DrawStringOnCenter(string text)
+        {
+            Vector2 position =
+                new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
+                    _graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
+            Globals.spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
         }
     }
 }
