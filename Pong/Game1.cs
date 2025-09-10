@@ -7,6 +7,7 @@ namespace Pong
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
         public Game1()
         {
@@ -23,7 +24,7 @@ namespace Pong
 
         protected override void LoadContent()
         {
-            Globals.spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
             Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
@@ -56,7 +57,7 @@ namespace Pong
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Globals.backgroundColor);
-            Globals.spriteBatch.Begin();
+            _spriteBatch.Begin();
 
             switch (Globals.gameState)
             {
@@ -73,13 +74,14 @@ namespace Pong
                     break;
             }
 
-            Globals.spriteBatch.End();
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
 
         private void UpdateMainMenu(GameTime gameTime)
         {
-
+            if (Keyboard.GetState().IsKeyDown(Globals.continueKey))
+                Globals.gameState = GameState.InGame;
         }
         private void DrawMainMenu(GameTime gameTime)
         {
@@ -108,7 +110,7 @@ namespace Pong
             Vector2 position =
                 new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
                     _graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
-            Globals.spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
+            _spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
         }
     }
 }
