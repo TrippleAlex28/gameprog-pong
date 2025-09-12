@@ -6,20 +6,29 @@ namespace Pong
 {
     public class Game1 : Game
     {
-        public GraphicsDeviceManager graphics;
+        private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private Ball _ball;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferWidth = 640;
-            graphics.PreferredBackBufferHeight = 480;
+            _graphics = new GraphicsDeviceManager(this);
+            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = 640;
+            _graphics.PreferredBackBufferHeight = 480;
 
             Window.Title = "Pong - 5463947 & 9392998";
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+            
+            _ball = new Ball(_graphics.GraphicsDevice.Viewport);
         }
 
         protected override void LoadContent()
@@ -90,11 +99,13 @@ namespace Pong
 
         private void UpdateInGame(GameTime gameTime)
         {
-
+            _ball.Update(gameTime);
+            if (Keyboard.GetState().IsKeyDown(Keys.A) && gameTime.TotalGameTime.Milliseconds % 500 == 0)
+                _ball.MirrorAngle(Keyboard.GetState().IsKeyDown(Keys.D));
         }
         private void DrawInGame(GameTime gameTime)
         {
-
+            _ball.Draw(_spriteBatch, gameTime);
         }
         private void UpdateGameOver(GameTime gameTime)
         {
@@ -108,8 +119,8 @@ namespace Pong
         private void DrawStringOnCenter(string text)
         {
             Vector2 position =
-                new Vector2(graphics.GraphicsDevice.Viewport.Width / 2f,
-                    graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
+                new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
+                    _graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
             _spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
         }
     }
