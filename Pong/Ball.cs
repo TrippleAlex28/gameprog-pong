@@ -35,7 +35,6 @@ public class Ball
     /// </summary>
     public void SetAngle(float angle)
     {
-        Console.WriteLine("[DEBUG] random angle: " + angle * (180 / float.Pi) + "°");
         _angle = new Vector2(float.Cos(angle), -float.Sin(angle));
     }
 

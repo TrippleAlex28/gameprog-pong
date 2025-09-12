@@ -100,6 +100,7 @@ namespace Pong
         private void UpdateInGame(GameTime gameTime)
         {
             _ball.Update(gameTime);
+            // For debugging
             if (Keyboard.GetState().IsKeyDown(Keys.A) && gameTime.TotalGameTime.Milliseconds % 500 == 0)
                 _ball.MirrorAngle(Keyboard.GetState().IsKeyDown(Keys.D));
         }
