@@ -6,9 +6,6 @@ namespace Pong
 {
   class Globals
   {
-    public static bool isFullScreen = false;
-    public static Point windowSize = new Point(640, 480);
-    
     public static Texture2D paddleTexture;
     public static Texture2D ballTexture;
     public static SpriteFont font;
@@ -33,7 +30,7 @@ namespace Pong
     public const short ballSize = 24;
 
     // Speed is measured in pixels per second
-    public static short paddleSpeed = 256;
+    public static short paddleSpeed = 896;
     public static short ballSpeedBase = 128;
     public static short ballSpeedIncrement = 32;
   }
