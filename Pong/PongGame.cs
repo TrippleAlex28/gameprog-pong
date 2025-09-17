@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pong
 {
-    public class Game1 : Game
+    public class PongGame : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public Game1()
+        public PongGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.IsFullScreen = Globals.isFullScreen;
