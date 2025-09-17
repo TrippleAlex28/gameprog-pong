@@ -12,14 +12,14 @@ namespace Pong
     Color paddleColor;
     int currentPos;
 
-    public Paddle(Game1 instance, PaddleMovementDirection paddleMovDir, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
+    public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
     {
       this.paddleMovDir = paddleMovDir;
       this.positiveMovKey = positiveMovKey;
       this.negativeMovKey = negativeMovKey;
       this.paddleColor = paddleColor;
 
-      currentPos = paddleMovDir.Equals(PaddleMovementDirection.Vertical) ? instance.graphics.PreferredBackBufferHeight / 2 : instance.graphics.PreferredBackBufferWidth / 2;
+      currentPos = paddleMovDir.Equals(PaddleMovementDirection.Vertical) ? graphics.PreferredBackBufferHeight / 2 : graphics.PreferredBackBufferWidth / 2;
     }
 
     public void Update(GameTime gameTime, KeyboardState keyboardState)

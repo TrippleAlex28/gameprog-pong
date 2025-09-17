@@ -41,9 +41,9 @@ public class Ball
     /// <summary>
     /// Mirror angle that ball moves. Used when ball collides with wall
     /// </summary>
-    public void MirrorAngle(bool clockwise)
+    public void MirrorAngle(bool horizontal)
     {
-        _angle.Rotate(float.Pi / 2f * (clockwise ? 1f : -1f));
+        _angle = new Vector2(horizontal ? -_angle.X : _angle.X, horizontal ? _angle.Y : -_angle.Y);
     }
 
     private static Vector2 ToCenter(Viewport viewport, Vector2 thingSize)

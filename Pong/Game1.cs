@@ -99,10 +99,11 @@ namespace Pong
 
         private void UpdateInGame(GameTime gameTime)
         {
+            if (_ball.Position.Y <= 0 ||
+                _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.ballSize / 2f)
+                _ball.MirrorAngle(false);
+            
             _ball.Update(gameTime);
-            // For debugging
-            if (Keyboard.GetState().IsKeyDown(Keys.A) && gameTime.TotalGameTime.Milliseconds % 500 == 0)
-                _ball.MirrorAngle(Keyboard.GetState().IsKeyDown(Keys.D));
         }
         private void DrawInGame(GameTime gameTime)
         {
