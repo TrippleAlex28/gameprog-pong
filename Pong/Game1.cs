@@ -9,17 +9,26 @@ namespace Pong
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private Ball _ball;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.IsFullScreen = Globals.isFullScreen;
-            _graphics.PreferredBackBufferWidth = Globals.windowSize.X;
-            _graphics.PreferredBackBufferHeight = Globals.windowSize.Y;
+            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = 640;
+            _graphics.PreferredBackBufferHeight = 480;
 
             Window.Title = "Pong - 5463947 & 9392998";
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+            
+            _ball = new Ball(_graphics.GraphicsDevice.Viewport);
         }
 
         protected override void LoadContent()
@@ -90,11 +99,15 @@ namespace Pong
 
         private void UpdateInGame(GameTime gameTime)
         {
-
+            if (_ball.Position.Y <= 0 ||
+                _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.ballSize / 2f)
+                _ball.MirrorAngle(false);
+            
+            _ball.Update(gameTime);
         }
         private void DrawInGame(GameTime gameTime)
         {
-
+            _ball.Draw(_spriteBatch, gameTime);
         }
         private void UpdateGameOver(GameTime gameTime)
         {
