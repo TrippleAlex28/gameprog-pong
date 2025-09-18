@@ -5,25 +5,35 @@ using Microsoft.Xna.Framework.Input;
 namespace Pong;
 public class PongGame : Game
 {
-    public GraphicsDeviceManager graphics;
-    public SpriteBatch spriteBatch;
+    private GraphicsDeviceManager _graphics;
+    private SpriteBatch _spriteBatch;
+
+    private Ball _ball;
 
     public PongGame()
     {
-        graphics = new GraphicsDeviceManager(this);
-        graphics.IsFullScreen = false;
-        graphics.PreferredBackBufferWidth = 640;
-        graphics.PreferredBackBufferHeight = 480;
+        _graphics = new GraphicsDeviceManager(this);
+        _graphics.IsFullScreen = false;
+        _graphics.PreferredBackBufferWidth = 640;
+        _graphics.PreferredBackBufferHeight = 480;
 
         Window.Title = "Pong - 5463947 & 9392998";
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
+    
+    protected override void Initialize()
+    {
+        base.Initialize();
+        
+        _ball = new Ball(_graphics.GraphicsDevice.Viewport);
+    }
+
 
     protected override void LoadContent()
     {
-        spriteBatch = new SpriteBatch(GraphicsDevice);
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
         Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
@@ -56,7 +66,7 @@ public class PongGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Globals.backgroundColor);
-        spriteBatch.Begin();
+        _spriteBatch.Begin();
 
         switch (Globals.gameState)
         {
@@ -73,7 +83,7 @@ public class PongGame : Game
                 break;
         }
 
-        spriteBatch.End();
+        _spriteBatch.End();
         base.Draw(gameTime);
     }
 
@@ -89,11 +99,15 @@ public class PongGame : Game
 
     private void UpdateInGame(GameTime gameTime)
     {
-
+        if (_ball.Position.Y <= 0 ||
+            _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.ballSize / 2f)
+            _ball.MirrorAngle(false);
+        
+        _ball.Update(gameTime);
     }
     private void DrawInGame(GameTime gameTime)
     {
-        
+        _ball.Draw(_spriteBatch, gameTime);
     }
     private void UpdateGameOver(GameTime gameTime)
     {
@@ -103,12 +117,12 @@ public class PongGame : Game
     {
 
     }
-    
+        
     private void DrawStringOnCenter(string text)
     {
         Vector2 position =
-            new Vector2(graphics.GraphicsDevice.Viewport.Width / 2f,
-                graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
-        spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
+            new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
+                _graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
+        _spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
     }
 }
