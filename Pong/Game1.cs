@@ -3,14 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Pong;
-public class Game1 : Game
+public class PongGame : Game
 {
     public GraphicsDeviceManager graphics;
     public SpriteBatch spriteBatch;
 
-    Paddle[] playerPaddles = new Paddle[4];
-
-    public Game1()
+    public PongGame()
     {
         graphics = new GraphicsDeviceManager(this);
         graphics.IsFullScreen = false;
@@ -30,16 +28,6 @@ public class Game1 : Game
         Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
         Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
         Globals.font = Content.Load<SpriteFont>("default_font");
-
-        // create paddles and add them to the array, for some reason doing the loadcontent actions of paddles in the constructor caused an error so it's like this    
-        playerPaddles[0] = new Paddle(this, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Color.Blue);
-        playerPaddles[1] = new Paddle(this, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Color.Red);
-        playerPaddles[2] = new Paddle(this, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Color.Green);
-        playerPaddles[3] = new Paddle(this, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Color.Purple);
-        for (int i = 0; i < playerPaddles.Length; i++)
-        {
-            playerPaddles[i].LoadContent();
-        }
     }
 
     protected override void Update(GameTime gameTime)
@@ -101,17 +89,11 @@ public class Game1 : Game
 
     private void UpdateInGame(GameTime gameTime)
     {
-        for (int i = 0; i < playerPaddles.Length; i++)
-        {
-            playerPaddles[i].Update(gameTime);
-        }
+
     }
     private void DrawInGame(GameTime gameTime)
     {
-         for (int i = 0; i < playerPaddles.Length; i++)
-        {
-            playerPaddles[i].Draw(gameTime);
-        }
+        
     }
     private void UpdateGameOver(GameTime gameTime)
     {
