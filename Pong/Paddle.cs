@@ -7,8 +7,6 @@ class Paddle
 {
   public const short borderPadding = 16; 
 
-  private PongGame _instance;
-
   PaddleMovementDirection paddleMovDir;
   Keys positiveMovKey;
   Keys negativeMovKey;
@@ -26,16 +24,15 @@ class Paddle
   Point drawPosition;
   Vector2 paddleOrigin;
 
-  public Paddle(PongGame instance, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
+  public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
   {
-    _instance = instance;
     this.paddleMovDir = paddleMovDir;
     this.IsFarSide = IsFarSide;
     this.positiveMovKey = positiveMovKey;
     this.negativeMovKey = negativeMovKey;
     this.paddleColor = paddleColor;
 
-    currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ? _instance.graphics.PreferredBackBufferHeight / 2 : _instance.graphics.PreferredBackBufferWidth / 2);
+    currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ?graphics.PreferredBackBufferHeight / 2 :graphics.PreferredBackBufferWidth / 2);
 
     // assuming symmetrical paddle texture
     paddleRotation = MathHelper.ToRadians(paddleMovDir == PaddleMovementDirection.Vertical ? 0.0f : 90.0f);
@@ -47,7 +44,7 @@ class Paddle
     if (Globals.gameType == GameType.TwoPlayer) // always only vertical paddles, full field size
     {
       if (IsFarSide)
-        constantPos = (short)(_instance.graphics.PreferredBackBufferWidth - borderPadding);
+        constantPos = (short)(graphics.PreferredBackBufferWidth - borderPadding);
       else
         constantPos = borderPadding;
     }
@@ -55,17 +52,17 @@ class Paddle
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
-        short sideBorderSize = (short)((_instance.graphics.PreferredBackBufferWidth - _instance.graphics.PreferredBackBufferHeight) / 2);
+        short sideBorderSize = (short)((graphics.PreferredBackBufferWidth - graphics.PreferredBackBufferHeight) / 2);
 
         if (IsFarSide)
-          constantPos = (short)(_instance.graphics.PreferredBackBufferWidth - sideBorderSize - borderPadding);
+          constantPos = (short)(graphics.PreferredBackBufferWidth - sideBorderSize - borderPadding);
         else
           constantPos = (short)(sideBorderSize + borderPadding);
       }
       else // horizontal
       {
         if (IsFarSide)
-          constantPos = (short)(_instance.graphics.PreferredBackBufferHeight - borderPadding);
+          constantPos = (short)(graphics.PreferredBackBufferHeight - borderPadding);
         else
           constantPos = borderPadding;
       }
@@ -75,20 +72,20 @@ class Paddle
     if (Globals.gameType == GameType.TwoPlayer)
     {
       clampMin = (short)(Globals.paddleTexture.Height / 2);
-      clampMax = (short)(_instance.graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
+      clampMax = (short)(graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
     }
     else // 4p
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
         clampMin = (short)(Globals.paddleTexture.Height / 2);
-        clampMax = (short)(_instance.graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
+        clampMax = (short)(graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
       }
       else // horizontal
       {
-        short sideBorderSize = (short)((_instance.graphics.PreferredBackBufferWidth - _instance.graphics.PreferredBackBufferHeight) / 2);
+        short sideBorderSize = (short)((graphics.PreferredBackBufferWidth - graphics.PreferredBackBufferHeight) / 2);
         clampMin = (short)(sideBorderSize + Globals.paddleTexture.Height / 2);
-        clampMax = (short)(sideBorderSize + _instance.graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
+        clampMax = (short)(sideBorderSize + graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
       }
     }
   }
@@ -116,12 +113,12 @@ class Paddle
     );
   }
 
-  public void Draw(GameTime gameTime)
+  public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
   {
     // don't update when not participating
     if (Globals.gameType == GameType.TwoPlayer && paddleMovDir == PaddleMovementDirection.Horizontal) return;
     
-    _instance.spriteBatch.Draw(
+    spriteBatch.Draw(
       Globals.paddleTexture,
       new Rectangle(drawPosition, Globals.paddleSize),
       null,
