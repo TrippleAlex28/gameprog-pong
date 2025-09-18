@@ -9,6 +9,7 @@ public class PongGame : Game
     private SpriteBatch _spriteBatch;
 
     private Ball _ball;
+    private Paddle[] _paddles;
 
     public PongGame()
     {
@@ -90,19 +91,34 @@ public class PongGame : Game
     private void UpdateMainMenu(GameTime gameTime)
     {
         if (Keyboard.GetState().IsKeyDown(Globals.continueKey))
+        {
             Globals.gameState = GameState.InGame;
+            OnGameStart();
+        }
     }
     private void DrawMainMenu(GameTime gameTime)
     {
         DrawStringOnCenter("Welkom bij PONG! Druk op <SPACE> om te beginnen!");
     }
 
+    private void OnGameStart()
+    {
+        _paddles[0] = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
+        _paddles[1] = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
+
+        if (Globals.gameType == GameType.FourPlayer)
+        {
+            _paddles[2] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
+            _paddles[3] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
+
+        }   
+    }
     private void UpdateInGame(GameTime gameTime)
     {
         if (_ball.Position.Y <= 0 ||
             _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.ballSize / 2f)
             _ball.MirrorAngle(false);
-        
+
         _ball.Update(gameTime);
     }
     private void DrawInGame(GameTime gameTime)
