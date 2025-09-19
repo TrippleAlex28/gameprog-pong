@@ -101,7 +101,6 @@ public class PongGame : Game
     {
         DrawStringOnCenter("Welkom bij PONG! Druk op <SPACE> om te beginnen!");
     }
-
     private void OnGameStart()
     {
         _paddles[0].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
@@ -117,6 +116,7 @@ public class PongGame : Game
             _paddles[3].health = Globals.playerBaseHealth;
         }   
     }
+    
     private void UpdateInGame(GameTime gameTime)
     {
         if (_ball.Position.Y <= 0 ||
@@ -135,6 +135,7 @@ public class PongGame : Game
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
             _paddles[i].paddle.Draw(_spriteBatch, gameTime);
     }
+
     private void UpdateGameOver(GameTime gameTime)
     {
 
