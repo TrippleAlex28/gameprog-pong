@@ -5,6 +5,11 @@ namespace Pong;
 
 class Utils
 {
+    public static float NormalizeAngleDeg(float angle)
+    {
+        return (angle % 360f + 360f) % 360f;
+    }
+    
     /// <summary>
     /// Are rectangle A & B colliding
     /// </summary>
@@ -54,7 +59,6 @@ class Utils
     /// </summary>
     public static (Point borderSize, bool IsWidthBorder) GetSideBorderSize(Point windowSize)
     {
-        Console.WriteLine(windowSize);
         if (windowSize.X > windowSize.Y)
             return (
                 new((windowSize.X - windowSize.Y) / 2, windowSize.Y),

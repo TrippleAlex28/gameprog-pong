@@ -1,3 +1,5 @@
+using System;
+using System.Security.Claims;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,7 +13,6 @@ class Paddle
   private PaddleMovementDirection _paddleMovDir;
   private Keys _positiveMovKey;
   private Keys _negativeMovKey;
-  private Color _paddleColor;
 
   // the constant position perpendicular to the movement axis
   private short _constantPos;
@@ -27,13 +28,19 @@ class Paddle
   private Point _drawPosition;
   private Point _drawSize;
 
-  public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
+  private const float _ballRedirectMaxAngle = 75.0f;
+  private const float _ballRedirectMinAngle = 5.0f;
+  private const float _ballPrevAngleImpact = .25f;
+
+  private short _playerId;
+
+  public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, short playerId)
   {
     _paddleMovDir = paddleMovDir;
     _IsFarSide = IsFarSide;
     _positiveMovKey = positiveMovKey;
     _negativeMovKey = negativeMovKey;
-    _paddleColor = paddleColor;
+    _playerId = playerId;
 
     _drawSize = Utils.GetScaledPaddleSize(new(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height));
 
@@ -78,7 +85,7 @@ class Paddle
     if (collided)
     {
       // calculate ball redirection angle based on where it landed on the paddle
-      ball.SetAngle(CalculateBallRedirectAngle());
+      ball.Bounce(_playerId, CalculateBallRedirectAngle(obj1Offset.Y + ball.DrawSize.Y / 2, ball.GetAngleDeg()));
     }
   }
 
@@ -91,7 +98,7 @@ class Paddle
       Globals.paddleTexture,
       new Rectangle(_drawPosition, _drawSize),
       null,
-      _paddleColor,
+      Globals.playerColors[_playerId],
       _paddleRotation,
       Vector2.Zero,
       SpriteEffects.None,
@@ -101,9 +108,45 @@ class Paddle
 
 
 
-  private float CalculateBallRedirectAngle()
+  private float CalculateBallRedirectAngle(int verticalPaddleOffset, float prevBallAngle)
   {
-    return .0f;
+    // Map the ball hit paddle offset from -1 to 1
+    float halfHeight = _drawSize.Y * .5f;
+    float relativeY = verticalPaddleOffset / halfHeight - 1;
+
+    // inverse relative Y so the direction of the ball inverses
+    relativeY = -relativeY;
+
+    // Clamp it just to make sure, but I'm pretty sure this should never activate
+    relativeY = MathHelper.Clamp(relativeY, -1f, 1f);
+
+    // calculate base angle based on the relative Y
+    float baseAngle = !_IsFarSide
+      ? relativeY * _ballRedirectMaxAngle
+      : 180f - (relativeY * _ballRedirectMaxAngle);
+
+    // Prevent the ball from going straight ahead (booooriiiing)
+    if (!_IsFarSide)
+    {
+      if (baseAngle > 0 && baseAngle < _ballRedirectMinAngle) baseAngle = _ballRedirectMinAngle;
+      if (baseAngle < 0 && baseAngle > -_ballRedirectMinAngle) baseAngle = -_ballRedirectMinAngle;
+    }
+    else
+    {
+      if (baseAngle > 0 && baseAngle < _ballRedirectMinAngle) baseAngle = 180f - _ballRedirectMinAngle;
+      if (baseAngle < 0 && baseAngle > -_ballRedirectMinAngle) baseAngle = 180f - -_ballRedirectMinAngle;
+    }
+
+    // TODO: If you hit the ball dead center on your paddle, perfect hit mechanic 
+    if (baseAngle == 0) Console.WriteLine("PERFECT HIT");
+
+    // Mix new angle and old angle to smoothen out the bounces
+    float newAngle = MathHelper.Lerp(baseAngle, prevBallAngle, _ballPrevAngleImpact);
+
+    // Normalize new angle (not really necessary ig)
+    newAngle = Utils.NormalizeAngleDeg(newAngle);
+    
+    return newAngle;
   }
 
   private void SetInitialPaddlePosition(GraphicsDeviceManager graphics)

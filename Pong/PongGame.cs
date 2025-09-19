@@ -121,16 +121,16 @@ public class PongGame : Game
 
         _ball = new Ball(_graphics.GraphicsDevice.Viewport);
 
-        _paddles[0].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
+        _paddles[0].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, 0);
         _paddles[0].health = Globals.playerBaseHealth;
-        _paddles[1].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
+        _paddles[1].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, 1);
         _paddles[1].health = Globals.playerBaseHealth;
 
         if (Globals.gameType != GameType.FourPlayer) return;
 
-        _paddles[2].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
+        _paddles[2].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, 2);
         _paddles[2].health = Globals.playerBaseHealth;
-        _paddles[3].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
+        _paddles[3].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, 3);
         _paddles[3].health = Globals.playerBaseHealth;
     }
 
@@ -139,7 +139,7 @@ public class PongGame : Game
         if (_ball.Position.Y <= 0 ||
             _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.baseBallSize / 2f)
             _ball.MirrorAngle(false);
-
+            
         _ball.Update(gameTime);
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)

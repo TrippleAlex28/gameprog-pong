@@ -37,7 +37,7 @@ class Globals
 
   // Speed is measured in pixels per second
   public const short paddleSpeed = 384;
-  public const short ballSpeedBase = 196;
+  public const short ballSpeedBase = 256;
   public const short ballSpeedIncrement = 32;
 
   // Game initially was made for 720p resolution.
