@@ -9,9 +9,9 @@ class Globals
   public static Texture2D paddleTexture;
   public static Texture2D heartTexture;
   public static Texture2D ballTexture;
-  
+
   public static Texture2D pixelTexture;
-  
+
   public static SpriteFont font;
 
   public static GameState gameState = GameState.MainMenu;
@@ -30,17 +30,17 @@ class Globals
     Color.Pink
   ];
 
-  public const int playerBaseHealth = 3;
+  public const short playerBaseHealth = 3;
 
-  public static readonly Point paddleSize = new Point(8, 64);
-  public const short ballSize = 24;
+  public static readonly Point basePaddleSize = new Point(12, 96);
+  public const short baseBallSize = 32;
 
   // Speed is measured in pixels per second
-  public static short paddleSpeed = 256;
-  public static short ballSpeedBase = 128;
-  public static short ballSpeedIncrement = 32;
+  public const short paddleSpeed = 384;
+  public const short ballSpeedBase = 196;
+  public const short ballSpeedIncrement = 32;
 
   // Game initially was made for 720p resolution.
   // So if window is resized it is compared to initial value that was game made for and values are scaled.
-  public const short ViewportSizeMultiplier = 1280;
+  public static readonly Point ViewportSizeMultiplier = new(1280, 720);
 }

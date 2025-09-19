@@ -14,8 +14,6 @@ class Paddle
 
   // the constant position perpendicular to the movement axis
   private short _constantPos;
-
-  private short _paddleSpeed;
   private bool _IsFarSide;
   private float _paddleRotation;
   private short _clampMin;
@@ -26,6 +24,7 @@ class Paddle
 
   // Center of the paddle
   private Point _drawPosition;
+  private Point _drawSize;
 
   public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
   {
@@ -35,10 +34,12 @@ class Paddle
     _negativeMovKey = negativeMovKey;
     _paddleColor = paddleColor;
 
+    _drawSize = Utils.GetScaledPaddleSize(new(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height));
+
     // Set initial position to center of movement axis
     _currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical
-      ? graphics.GraphicsDevice.Viewport.Height / 2 - Globals.paddleSize.Y / 2
-      : graphics.GraphicsDevice.Viewport.Width / 2 - Globals.paddleSize.Y / 2
+      ? graphics.GraphicsDevice.Viewport.Height / 2 - _drawSize.Y / 2
+      : graphics.GraphicsDevice.Viewport.Width / 2 - _drawSize.Y / 2
     );
 
     // set the paddle rotation, assuming the paddle texture is symmetrical
@@ -96,19 +97,19 @@ class Paddle
     if (Globals.gameType == GameType.TwoPlayer)
     {
       _clampMin = 0;
-      _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y);
+      _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - _drawSize.Y);
     }
     else
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
         _clampMin = 0;
-        _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y);
+        _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - _drawSize.Y);
       }
       else
       {
         short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
-        _clampMin = (short)(sideBorderSize + Globals.paddleSize.Y);
+        _clampMin = (short)(sideBorderSize + _drawSize.Y);
         _clampMax = (short)(sideBorderSize + graphics.GraphicsDevice.Viewport.Height);
       }
     }
@@ -140,6 +141,9 @@ class Paddle
 
     // handle ball collisions
     // if (Utils.IsColliding(new(_drawPosition)))
+    // {
+
+    // }
   }
 
   public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -149,7 +153,7 @@ class Paddle
 
     spriteBatch.Draw(
       Globals.paddleTexture,
-      new Rectangle(_drawPosition, Globals.paddleSize),
+      new Rectangle(_drawPosition, _drawSize),
       null,
       _paddleColor,
       _paddleRotation,

@@ -137,7 +137,7 @@ public class PongGame : Game
     private void UpdateInGame(GameTime gameTime)
     {
         if (_ball.Position.Y <= 0 ||
-            _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.ballSize / 2f)
+            _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.baseBallSize / 2f)
             _ball.MirrorAngle(false);
 
         _ball.Update(gameTime);

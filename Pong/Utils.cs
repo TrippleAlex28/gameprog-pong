@@ -44,7 +44,7 @@ class Utils
             new(windowSize - sideBorderSize, sideBorderSize)
         );
     }
-    
+
     /// <summary>
     /// Return the size of a single border area and whether this border area should be on the sides or top or bottom
     /// </summary>
@@ -62,15 +62,20 @@ class Utils
                 false
             );
     }
+
+    public static Point GetScaledPaddleSize(Point windowSize)
+    {
+        return new(
+            Globals.basePaddleSize.X * windowSize.X / Globals.ViewportSizeMultiplier.X,
+            Globals.basePaddleSize.Y * windowSize.Y / Globals.ViewportSizeMultiplier.Y
+        );
+    }
+
+    public static Point GetScaledBallSize(Point windowSize)
+    {
+        return new(
+            Globals.baseBallSize * windowSize.X / Globals.ViewportSizeMultiplier.X,
+            Globals.baseBallSize * windowSize.Y / Globals.ViewportSizeMultiplier.Y
+        );
+    }
 }
-
-/*
-
-return (
-    rect1.x < rect2.x + rect2.width &&
-    rect1.x + rect1.width > rect2.x &&
-    rect1.y < rect2.y + rect2.height &&
-    rect1.y + rect1.height > rect2.y
-  );
-
-*/
