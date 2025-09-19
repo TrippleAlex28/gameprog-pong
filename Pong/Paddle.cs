@@ -32,7 +32,7 @@ class Paddle
     this.negativeMovKey = negativeMovKey;
     this.paddleColor = paddleColor;
 
-    currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ?graphics.PreferredBackBufferHeight / 2 :graphics.PreferredBackBufferWidth / 2);
+    currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ? graphics.GraphicsDevice.Viewport.Height / 2 :graphics.GraphicsDevice.Viewport.Width / 2);
 
     // assuming symmetrical paddle texture
     paddleRotation = MathHelper.ToRadians(paddleMovDir == PaddleMovementDirection.Vertical ? 0.0f : 90.0f);
@@ -44,7 +44,7 @@ class Paddle
     if (Globals.gameType == GameType.TwoPlayer) // always only vertical paddles, full field size
     {
       if (IsFarSide)
-        constantPos = (short)(graphics.PreferredBackBufferWidth - borderPadding);
+        constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - borderPadding);
       else
         constantPos = borderPadding;
     }
@@ -52,17 +52,17 @@ class Paddle
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
-        short sideBorderSize = (short)((graphics.PreferredBackBufferWidth - graphics.PreferredBackBufferHeight) / 2);
+        short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
 
         if (IsFarSide)
-          constantPos = (short)(graphics.PreferredBackBufferWidth - sideBorderSize - borderPadding);
+          constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - sideBorderSize - borderPadding);
         else
           constantPos = (short)(sideBorderSize + borderPadding);
       }
       else // horizontal
       {
         if (IsFarSide)
-          constantPos = (short)(graphics.PreferredBackBufferHeight - borderPadding);
+          constantPos = (short)(graphics.GraphicsDevice.Viewport.Height - borderPadding);
         else
           constantPos = borderPadding;
       }
@@ -72,20 +72,20 @@ class Paddle
     if (Globals.gameType == GameType.TwoPlayer)
     {
       clampMin = (short)(Globals.paddleTexture.Height / 2);
-      clampMax = (short)(graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
+      clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleTexture.Height / 2);
     }
     else // 4p
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
         clampMin = (short)(Globals.paddleTexture.Height / 2);
-        clampMax = (short)(graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
+        clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleTexture.Height / 2);
       }
       else // horizontal
       {
-        short sideBorderSize = (short)((graphics.PreferredBackBufferWidth - graphics.PreferredBackBufferHeight) / 2);
+        short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
         clampMin = (short)(sideBorderSize + Globals.paddleTexture.Height / 2);
-        clampMax = (short)(sideBorderSize + graphics.PreferredBackBufferHeight - Globals.paddleTexture.Height / 2);
+        clampMax = (short)(sideBorderSize + graphics.GraphicsDevice.Viewport.Height - Globals.paddleTexture.Height / 2);
       }
     }
   }

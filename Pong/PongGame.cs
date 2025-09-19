@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -37,7 +38,7 @@ public class PongGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
-        Globals.heartTexture = Content.Load<Texture2D>("sprites/heart.png");
+        Globals.heartTexture = Content.Load<Texture2D>("sprites/heart");
         Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
         Globals.font = Content.Load<SpriteFont>("default_font");
     }
@@ -64,7 +65,7 @@ public class PongGame : Game
 
         base.Update(gameTime);
     }
-
+    
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Globals.backgroundColor);
@@ -116,7 +117,7 @@ public class PongGame : Game
             _paddles[3].health = Globals.playerBaseHealth;
         }   
     }
-    
+
     private void UpdateInGame(GameTime gameTime)
     {
         if (_ball.Position.Y <= 0 ||
@@ -134,6 +135,54 @@ public class PongGame : Game
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
             _paddles[i].paddle.Draw(_spriteBatch, gameTime);
+
+        DrawPaddleHearts();
+    }
+    private void DrawPaddleHearts()
+    {
+        const short heartDrawSize = 32;
+        const short heartDrawGap = 8;
+        
+        for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
+        {
+            Vector2 drawStartPos = new();
+            sbyte drawDirection = 0;
+            switch (i)
+            {
+                case 0:
+                    drawStartPos = new(0, 0);
+                    drawDirection = 1;
+                    break;
+                case 1:
+                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width, 0);
+                    drawDirection = -1;
+                    break;
+                case 2:
+                    drawStartPos = new(0, _graphics.GraphicsDevice.Viewport.Height);
+                    drawDirection = 1;
+                    break;
+                case 3:
+                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width, _graphics.GraphicsDevice.Viewport.Height);
+                    drawDirection = -1;
+                    break;
+                default:
+                    Console.WriteLine("DrawPaddleHearts(): unhandled i in switch case");
+                    break;
+            }
+
+            for (int j = 0; j < _paddles[i].health; i++)
+            {
+                Point drawPos = new(
+                    (int)(drawStartPos.X + drawDirection * (j * (heartDrawGap + heartDrawSize))),
+                    (int)drawStartPos.Y
+                );
+                _spriteBatch.Draw(
+                    Globals.heartTexture,
+                    new Rectangle(drawPos, new(heartDrawSize)),
+                    Globals.playerColors[i]
+                );
+            }
+        }
     }
 
     private void UpdateGameOver(GameTime gameTime)
