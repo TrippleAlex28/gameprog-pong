@@ -15,7 +15,11 @@ public class Ball
     
     public Ball(Viewport viewport)
     {
-        SetAngle(_rng.NextSingle() * 2f * float.Pi);
+        float angle = _rng.NextSingle() * 2f * float.Pi;
+        while ((angle > 1/3 * float.Pi && angle < 2/3 * float.Pi) || (angle > 4/3 * float.Pi && angle < 5/3 * float.Pi))
+            angle = _rng.NextSingle() * 2f * float.Pi;
+
+        SetAngle(angle);
         Position = ToCenter(viewport, new Vector2(Globals.ballSize));
         Velocity = Globals.ballSpeedBase * viewport.Width / (float) Globals.ViewportSizeMultiplier;
     }
