@@ -139,7 +139,7 @@ public class PongGame : Game
         _ball.Update(gameTime);
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
-            _paddles[i].paddle.Update(gameTime);
+            _paddles[i].paddle.Update(_ball, gameTime);
     }
     
     private void DrawInGame(GameTime gameTime)
