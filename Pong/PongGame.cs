@@ -31,7 +31,6 @@ public class PongGame : Game
         _ball = new Ball(_graphics.GraphicsDevice.Viewport);
     }
 
-
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -96,9 +95,10 @@ public class PongGame : Game
             OnGameStart();
         }
     }
+    
     private void DrawMainMenu(GameTime gameTime)
     {
-        DrawStringOnCenter("Welkom bij PONG! Druk op <SPACE> om te beginnen!");
+        DrawStringInCenter("Welkom bij PONG! Druk op <" + Globals.continueKey.ToString().ToUpper() + "> om te beginnen!");
     }
 
     private void OnGameStart()
@@ -111,8 +111,9 @@ public class PongGame : Game
             _paddles[2] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
             _paddles[3] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
 
-        }   
+        }
     }
+    
     private void UpdateInGame(GameTime gameTime)
     {
         if (_ball.Position.Y <= 0 ||
@@ -121,20 +122,24 @@ public class PongGame : Game
 
         _ball.Update(gameTime);
     }
+    
     private void DrawInGame(GameTime gameTime)
     {
         _ball.Draw(_spriteBatch, gameTime);
     }
+
     private void UpdateGameOver(GameTime gameTime)
     {
-
+        if (Keyboard.GetState().IsKeyDown(Globals.continueKey))
+            Globals.gameState = GameState.MainMenu;
     }
+    
     private void DrawGameOver(GameTime gameTime)
     {
-
+        DrawStringInCenter("Game over, press <" + Globals.continueKey.ToString().ToUpper() + "> to exit to Main Menu");
     }
         
-    private void DrawStringOnCenter(string text)
+    private void DrawStringInCenter(string text)
     {
         Vector2 position =
             new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
