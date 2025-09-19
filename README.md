@@ -14,5 +14,6 @@ Features:
 - Has window resizing
 - - Does not support resizing in game, because who resizes pong midgame??? **JUST PRESS ESC KEY AND RESIZE!!!**
 - You can lose
+- Unfunny [README.md](./README.md) file that has recursion
 - I am out of ideas of features
 - really
