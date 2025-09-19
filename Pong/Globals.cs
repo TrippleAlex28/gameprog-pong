@@ -9,6 +9,9 @@ class Globals
   public static Texture2D paddleTexture;
   public static Texture2D heartTexture;
   public static Texture2D ballTexture;
+  
+  public static Texture2D pixelTexture;
+  
   public static SpriteFont font;
 
   public static GameState gameState = GameState.MainMenu;
@@ -29,7 +32,7 @@ class Globals
 
   public const int playerBaseHealth = 3;
 
-  public static readonly Point paddleSize = new Point(8, 48);
+  public static readonly Point paddleSize = new Point(8, 64);
   public const short ballSize = 24;
 
   // Speed is measured in pixels per second

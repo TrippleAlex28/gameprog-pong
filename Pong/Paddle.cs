@@ -14,6 +14,8 @@ class Paddle
 
   // the constant position perpendicular to the movement axis
   private short _constantPos;
+
+  private short _paddleSpeed;
   private bool _IsFarSide;
   private float _paddleRotation;
   private short _clampMin;
@@ -24,7 +26,6 @@ class Paddle
 
   // Center of the paddle
   private Point _drawPosition;
-  private Vector2 _paddleOrigin;
 
   public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
   {
@@ -34,63 +35,85 @@ class Paddle
     _negativeMovKey = negativeMovKey;
     _paddleColor = paddleColor;
 
-    _currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ? graphics.GraphicsDevice.Viewport.Height / 2 :graphics.GraphicsDevice.Viewport.Width / 2);
+    // Set initial position to center of movement axis
+    _currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical
+      ? graphics.GraphicsDevice.Viewport.Height / 2 - Globals.paddleSize.Y / 2
+      : graphics.GraphicsDevice.Viewport.Width / 2 - Globals.paddleSize.Y / 2
+    );
 
-    // assuming symmetrical paddle texture
+    // set the paddle rotation, assuming the paddle texture is symmetrical
     _paddleRotation = MathHelper.ToRadians(paddleMovDir == PaddleMovementDirection.Vertical ? 0.0f : 90.0f);
 
-    // set paddle origin to the center of the texture
-    _paddleOrigin.X = Globals.paddleSize.X / 2; 
-    _paddleOrigin.Y = Globals.paddleSize.Y / 2;
-
     // calculate constant position
-    if (Globals.gameType == GameType.TwoPlayer) // always only vertical paddles & full field size
+    if (Globals.gameType == GameType.TwoPlayer)
     {
       if (IsFarSide)
         _constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - borderPadding);
       else
         _constantPos = borderPadding;
     }
-    else // four players
+    else
     {
-      if (paddleMovDir == PaddleMovementDirection.Vertical) // vertical movement
-      {
-        short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
+      (Point borderSize, bool IsWidthBorder) = Utils.GetSideBorderSize(new(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height));
 
-        if (IsFarSide)
-          _constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - sideBorderSize - borderPadding);
-        else
-          _constantPos = (short)(sideBorderSize + borderPadding);
-      }
-      else // horizontal movement
+      if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
-        if (IsFarSide)
-          _constantPos = (short)(graphics.GraphicsDevice.Viewport.Height - borderPadding);
+        if (IsWidthBorder)
+        {
+          if (IsFarSide)
+            _constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - borderSize.X - borderPadding);
+          else
+            _constantPos = (short)(borderSize.X + borderPadding);
+        }
         else
-          _constantPos = borderPadding;
+        {
+          if (IsFarSide)
+            _constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - borderPadding);
+          else
+            _constantPos = borderPadding;
+        }
+      }
+      else
+      {
+        if (IsWidthBorder)
+        {
+          if (IsFarSide)
+            _constantPos = (short)(graphics.GraphicsDevice.Viewport.Height - borderPadding);
+          else
+            _constantPos = borderPadding;
+        }
+        else
+        {
+          if (IsFarSide)
+            _constantPos = (short)(graphics.GraphicsDevice.Viewport.Height - borderSize.Y - borderPadding);
+          else
+            _constantPos = (short)(borderSize.Y + borderPadding);
+        }
       }
     }
 
     // calculate movement clamps
     if (Globals.gameType == GameType.TwoPlayer)
     {
-      _clampMin = (short)(Globals.paddleSize.Y / 2);
-      _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
+      _clampMin = 0;
+      _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y);
     }
-    else // 4p
+    else
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
-        _clampMin = (short)(Globals.paddleSize.Y / 2);
-        _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
+        _clampMin = 0;
+        _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y);
       }
-      else // horizontal
+      else
       {
         short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
-        _clampMin = (short)(sideBorderSize + Globals.paddleSize.Y / 2);
-        _clampMax = (short)(sideBorderSize + graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
+        _clampMin = (short)(sideBorderSize + Globals.paddleSize.Y);
+        _clampMax = (short)(sideBorderSize + graphics.GraphicsDevice.Viewport.Height);
       }
     }
+
+
   }
 
   public void Update(Ball ball, GameTime gameTime)
@@ -116,22 +139,21 @@ class Paddle
     );
 
     // handle ball collisions
-    
-    
+    // if (Utils.IsColliding(new(_drawPosition)))
   }
 
   public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
   {
     // don't update when not participating
     if (Globals.gameType == GameType.TwoPlayer && _paddleMovDir == PaddleMovementDirection.Horizontal) return;
-    
+
     spriteBatch.Draw(
       Globals.paddleTexture,
       new Rectangle(_drawPosition, Globals.paddleSize),
       null,
       _paddleColor,
       _paddleRotation,
-      _paddleOrigin,
+      Vector2.Zero,
       SpriteEffects.None,
       1
     );

@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;
+using Microsoft.Xna.Framework;
 
 namespace Pong;
 
@@ -26,11 +26,41 @@ class Utils
     private static bool IsCollidingPriv(Rectangle obj1, Rectangle obj2)
     {
         return (
-            obj1.Location.X < obj2.Location.X + obj2.Size.Width &&
-            obj1.Location.X + obj1.Size.Width > obj2.Location.X &&
-            obj1.Location.Y < obj2.Location.Y + obj2.Size.Height &&
-            obj1.Location.Y + obj1.Size.Height > obj2.Location.Y
+            obj1.Location.X < obj2.Location.X + obj2.Size.X &&
+            obj1.Location.X + obj1.Size.X > obj2.Location.X &&
+            obj1.Location.Y < obj2.Location.Y + obj2.Size.Y &&
+            obj1.Location.Y + obj1.Size.Y > obj2.Location.Y
         );
+    }
+
+    /// <summary>
+    /// Return the close (near 0, 0) and far (near screen width, height) side border area. Useful when there are more than 2 paddles active
+    /// </summary>
+    public static (Rectangle closeBorder, Rectangle farBorder) GetSideBorders(Point windowSize)
+    {
+        Point sideBorderSize = GetSideBorderSize(windowSize).borderSize;
+        return (
+            new(new(0, 0), sideBorderSize),
+            new(windowSize - sideBorderSize, sideBorderSize)
+        );
+    }
+    
+    /// <summary>
+    /// Return the size of a single border area and whether this border area should be on the sides or top or bottom
+    /// </summary>
+    public static (Point borderSize, bool IsWidthBorder) GetSideBorderSize(Point windowSize)
+    {
+        Console.WriteLine(windowSize);
+        if (windowSize.X > windowSize.Y)
+            return (
+                new((windowSize.X - windowSize.Y) / 2, windowSize.Y),
+                true
+            );
+        else
+            return (
+                new(windowSize.X, (windowSize.Y - windowSize.X) / 2),
+                false
+            );
     }
 }
 

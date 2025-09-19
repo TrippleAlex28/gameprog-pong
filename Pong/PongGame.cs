@@ -39,6 +39,10 @@ public class PongGame : Game
         Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
         Globals.heartTexture = Content.Load<Texture2D>("sprites/heart");
         Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
+
+        Globals.pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
+        Globals.pixelTexture.SetData([Color.White]);
+        
         Globals.font = Content.Load<SpriteFont>("default_font");
     }
 
@@ -141,9 +145,27 @@ public class PongGame : Game
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
             _paddles[i].paddle.Update(_ball, gameTime);
     }
-    
+
     private void DrawInGame(GameTime gameTime)
     {
+        // Draw side border background if necessary
+        if (Globals.gameType == GameType.FourPlayer)
+        {
+            (Rectangle closeBorder, Rectangle farBorder) = Utils.GetSideBorders(new(_graphics.GraphicsDevice.Viewport.Width, _graphics.GraphicsDevice.Viewport.Height));
+
+            _spriteBatch.Draw(
+                Globals.pixelTexture,
+                closeBorder,
+                Color.Black
+            );
+
+            _spriteBatch.Draw(
+                Globals.pixelTexture,
+                farBorder,
+                Color.Black
+            );
+        }
+        
         _ball.Draw(_spriteBatch, gameTime);
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
