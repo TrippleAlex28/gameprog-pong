@@ -13,8 +13,9 @@ class Globals
   public static GameState gameState = GameState.MainMenu;
   public static GameType gameType = GameType.TwoPlayer;
 
-  public const Keys continueKey = Keys.Space;
-  public const Keys resetKey = Keys.R;
+  public const Keys TwoPlayersKey = Keys.F2;
+  public const Keys FourPlayersKey = Keys.F4;
+  public const Keys ResetKey = Keys.Space;
 
   public static Color backgroundColor = Color.White;
   // public static Texture2D backgroundTexture;
@@ -35,4 +36,5 @@ class Globals
   public static short paddleSpeed = 256;
   public static short ballSpeedBase = 128;
   public static short ballSpeedIncrement = 32;
+  public const float ViewportSizeMultiplier = 640f;
 }

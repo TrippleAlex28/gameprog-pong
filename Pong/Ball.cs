@@ -21,7 +21,7 @@ public class Ball
 
         SetAngle(angle);
         Position = ToCenter(viewport, new Vector2(Globals.ballSize));
-        Velocity = Globals.ballSpeedBase;
+        Velocity = Globals.ballSpeedBase * viewport.Width / Globals.ViewportSizeMultiplier;
     }
 
     public void Update(GameTime gt)
@@ -52,7 +52,7 @@ public class Ball
 
     private static Vector2 ToCenter(Viewport viewport, Vector2 thingSize)
     {
-        return new Vector2(viewport.Height / 2f - thingSize.X / 2f,
-            viewport.Width / 2f - thingSize.Y / 2f);
+        return new Vector2(viewport.Width / 2f - thingSize.X / 2f,
+            viewport.Height / 2f - thingSize.Y / 2f);
     }
 }
