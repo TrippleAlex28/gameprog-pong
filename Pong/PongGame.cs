@@ -10,7 +10,7 @@ public class PongGame : Game
     private SpriteBatch _spriteBatch;
 
     private Ball _ball;
-    private (Paddle paddle, int health) [] _paddles = new(Paddle, int)[4];
+    private (Paddle paddle, ushort health) [] _paddles = new(Paddle, ushort)[4];
     
     public PongGame()
     {
@@ -139,7 +139,13 @@ public class PongGame : Game
         _ball.Update(gameTime);
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
+        {
             _paddles[i].paddle.Update(gameTime);
+            if (_paddles[i].health == 0)
+            {
+                Globals.gameState = GameState.GameOver;
+            }
+        }
         
     }
     
