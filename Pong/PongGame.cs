@@ -9,7 +9,7 @@ public class PongGame : Game
     private SpriteBatch _spriteBatch;
 
     private Ball _ball;
-    private Paddle[] _paddles;
+    private Paddle[] _paddles = new Paddle[4];
 
     public PongGame()
     {
@@ -89,16 +89,25 @@ public class PongGame : Game
 
     private void UpdateMainMenu(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Globals.continueKey))
+        KeyboardState state = Keyboard.GetState();
+        if (state.IsKeyDown(Globals.twoPlayersKey))
         {
             Globals.gameState = GameState.InGame;
+            Globals.gameType = GameType.TwoPlayer;
+            OnGameStart();
+        }
+        else if (state.IsKeyDown(Globals.fourPlayersKey))
+        {
+            Globals.gameState = GameState.InGame;
+            Globals.gameType = GameType.FourPlayer;
             OnGameStart();
         }
     }
     
     private void DrawMainMenu(GameTime gameTime)
     {
-        DrawStringInCenter("Welkom bij PONG! Druk op <" + Globals.continueKey.ToString().ToUpper() + "> om te beginnen!");
+        DrawStringInCenter(0, "Welkom bij PONG!");
+        DrawStringInCenter(1, "Druk op <" + Globals.twoPlayersKey.ToString().ToUpper() + "> voor 2 player of <" + Globals.fourPlayersKey.ToString().ToUpper() + "> voor 4 player om te beginnen!");
     }
 
     private void OnGameStart()
@@ -106,12 +115,9 @@ public class PongGame : Game
         _paddles[0] = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
         _paddles[1] = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
 
-        if (Globals.gameType == GameType.FourPlayer)
-        {
-            _paddles[2] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
-            _paddles[3] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
-
-        }
+        if (Globals.gameType != GameType.FourPlayer) return;
+        _paddles[2] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
+        _paddles[3] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
     }
     
     private void UpdateInGame(GameTime gameTime)
@@ -130,20 +136,21 @@ public class PongGame : Game
 
     private void UpdateGameOver(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Globals.continueKey))
+        if (Keyboard.GetState().IsKeyDown(Globals.resetKey))
             Globals.gameState = GameState.MainMenu;
     }
     
     private void DrawGameOver(GameTime gameTime)
     {
-        DrawStringInCenter("Game over, press <" + Globals.continueKey.ToString().ToUpper() + "> to exit to Main Menu");
+        DrawStringInCenter(0, "Game over, press <" + Globals.resetKey.ToString().ToUpper() + "> to exit to Main Menu");
     }
         
-    private void DrawStringInCenter(string text)
+    private void DrawStringInCenter(short row, string text)
     {
+        Vector2 stringSize = Globals.font.MeasureString(text);
         Vector2 position =
             new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f,
-                _graphics.GraphicsDevice.Viewport.Height / 2f) - (Globals.font.MeasureString(text) / 2f);
+                _graphics.GraphicsDevice.Viewport.Height / 2f) - (stringSize / 2f) + new Vector2(0, stringSize.Y * row);
         _spriteBatch.DrawString(Globals.font, text, position, Globals.textColor);
     }
 }

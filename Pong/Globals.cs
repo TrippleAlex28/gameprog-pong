@@ -12,8 +12,9 @@ class Globals
   public static GameState gameState = GameState.MainMenu;
   public static GameType gameType = GameType.TwoPlayer;
 
-  public const Keys continueKey = Keys.Space;
-  public const Keys resetKey = Keys.R;
+  public const Keys twoPlayersKey = Keys.F2;
+  public const Keys fourPlayersKey = Keys.F4;
+  public const Keys resetKey = Keys.Space;
 
   public static Color backgroundColor = Color.White;
   // public static Texture2D backgroundTexture;
