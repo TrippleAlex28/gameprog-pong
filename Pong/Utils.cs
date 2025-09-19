@@ -6,31 +6,35 @@ namespace Pong;
 class Utils
 {
     /// <summary>
-    /// Are objects colliding
+    /// Are rectangle A & B colliding
     /// </summary>
-    public static bool IsColliding(Rectangle obj1, Rectangle obj2)
+    /// <param name="obj1"></param>
+    /// <param name="obj2"></param>
+    /// <returns>returns whether the objects collided and the offset from the objects to the collision point</returns>
+    public static (bool collided, Point obj1Offset, Point obj2Offset) IsColliding(Rectangle obj1, Rectangle obj2)
     {
         return IsCollidingPriv(obj1, obj2);
     }
 
-    /// <summary>
-    /// Are objects colliding and execute function if so
-    /// </summary>
-    public static bool IsColliding(Rectangle obj1, Rectangle obj2, Action func)
+    private static (bool collided, Point obj1Offset, Point obj2Offset) IsCollidingPriv(Rectangle obj1, Rectangle obj2)
     {
-        bool collided = IsCollidingPriv(obj1, obj2);
-        if (collided) func();
-        return collided;
-    }
-
-    private static bool IsCollidingPriv(Rectangle obj1, Rectangle obj2)
-    {
-        return (
+        bool collided =
             obj1.Location.X < obj2.Location.X + obj2.Size.X &&
             obj1.Location.X + obj1.Size.X > obj2.Location.X &&
             obj1.Location.Y < obj2.Location.Y + obj2.Size.Y &&
-            obj1.Location.Y + obj1.Size.Y > obj2.Location.Y
-        );
+            obj1.Location.Y + obj1.Size.Y > obj2.Location.Y;
+
+        int collisionLeft = MathHelper.Max(obj1.Location.X, obj2.Location.X);
+        int collisionTop = MathHelper.Max(obj1.Location.Y, obj2.Location.Y);
+
+        Point obj1Offset = collided
+            ? new(collisionLeft - obj1.Location.X, collisionTop - obj1.Location.Y)
+            : Point.Zero;
+        Point obj2Offset = collided
+            ? new(collisionLeft - obj2.Location.X, collisionTop - obj2.Location.Y)
+            : Point.Zero;
+
+        return (collided, obj1Offset, obj2Offset);
     }
 
     /// <summary>

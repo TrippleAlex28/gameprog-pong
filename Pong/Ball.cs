@@ -8,14 +8,14 @@ public class Ball
 {
     private Random _rng = new();
     private Vector2 _angle;
-    private Point _drawSize;
+    public Point DrawSize { get; private set; }
 
     public Vector2 Position { get; private set; }
     public float Velocity { get; set; }
 
     public Ball(Viewport viewport)
     {
-        _drawSize = Utils.GetScaledBallSize(new(viewport.Width, viewport.Height));
+        DrawSize = Utils.GetScaledBallSize(new(viewport.Width, viewport.Height));
 
         float angle = _rng.NextSingle() * 2f * float.Pi;
         while ((angle > 1 / 3 * float.Pi && angle < 2 / 3 * float.Pi) || (angle > 4 / 3 * float.Pi && angle < 5 / 3 * float.Pi))
@@ -35,7 +35,7 @@ public class Ball
     {
         spriteBatch.Draw(
             Globals.ballTexture,
-            new Rectangle(new((int)Position.X, (int)Position.Y), _drawSize),
+            new Rectangle(new((int)Position.X, (int)Position.Y), DrawSize),
             Color.White
         );
     }
