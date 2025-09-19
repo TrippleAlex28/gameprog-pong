@@ -14,11 +14,9 @@ public class PongGame : Game
     public PongGame()
     {
         _graphics = new GraphicsDeviceManager(this);
-        _graphics.IsFullScreen = false;
-        _graphics.PreferredBackBufferWidth = 640;
-        _graphics.PreferredBackBufferHeight = 480;
 
         Window.Title = "Pong - 5463947 & 9392998";
+        Window.AllowUserResizing = true;
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -27,8 +25,10 @@ public class PongGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        
-        _ball = new Ball(_graphics.GraphicsDevice.Viewport);
+        _graphics.IsFullScreen = false;
+        _graphics.PreferredBackBufferWidth = 1280;
+        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.ApplyChanges();
     }
 
     protected override void LoadContent()
@@ -90,13 +90,13 @@ public class PongGame : Game
     private void UpdateMainMenu(GameTime gameTime)
     {
         KeyboardState state = Keyboard.GetState();
-        if (state.IsKeyDown(Globals.twoPlayersKey))
+        if (state.IsKeyDown(Globals.TwoPlayersKey))
         {
             Globals.gameState = GameState.InGame;
             Globals.gameType = GameType.TwoPlayer;
             OnGameStart();
         }
-        else if (state.IsKeyDown(Globals.fourPlayersKey))
+        else if (state.IsKeyDown(Globals.FourPlayersKey))
         {
             Globals.gameState = GameState.InGame;
             Globals.gameType = GameType.FourPlayer;
@@ -107,11 +107,15 @@ public class PongGame : Game
     private void DrawMainMenu(GameTime gameTime)
     {
         DrawStringInCenter(0, "Welkom bij PONG!");
-        DrawStringInCenter(1, "Druk op <" + Globals.twoPlayersKey.ToString().ToUpper() + "> voor 2 player of <" + Globals.fourPlayersKey.ToString().ToUpper() + "> voor 4 player om te beginnen!");
+        DrawStringInCenter(1, "Druk op <" + Globals.TwoPlayersKey.ToString().ToUpper() + "> voor 2 player of <" + Globals.FourPlayersKey.ToString().ToUpper() + "> voor 4 player om te beginnen!");
     }
 
     private void OnGameStart()
     {
+        Window.AllowUserResizing = false;
+        
+        _ball = new Ball(_graphics.GraphicsDevice.Viewport);
+        
         _paddles[0] = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
         _paddles[1] = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
 
@@ -136,13 +140,16 @@ public class PongGame : Game
 
     private void UpdateGameOver(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Globals.resetKey))
+        if (Keyboard.GetState().IsKeyDown(Globals.ResetKey))
+        {
+            Window.AllowUserResizing = true;
             Globals.gameState = GameState.MainMenu;
+        }
     }
     
     private void DrawGameOver(GameTime gameTime)
     {
-        DrawStringInCenter(0, "Game over, press <" + Globals.resetKey.ToString().ToUpper() + "> to exit to Main Menu");
+        DrawStringInCenter(0, "Game over, press <" + Globals.ResetKey.ToString().ToUpper() + "> to exit to Main Menu");
     }
         
     private void DrawStringInCenter(short row, string text)
