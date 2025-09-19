@@ -9,7 +9,7 @@ public class PongGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private Viewport _prevWindowSize;
+    private Rectangle _prevWindowSize;
     private float _resizeTextTimeLeft;
 
     private Ball _ball;
@@ -35,7 +35,7 @@ public class PongGame : Game
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.ApplyChanges();
 
-        _prevWindowSize = _graphics.GraphicsDevice.Viewport;
+        _prevWindowSize = new Rectangle(Window.Position.X, Window.Position.Y, _graphics.GraphicsDevice.Viewport.Width, _graphics.GraphicsDevice.Viewport.Height);
     }
 
     protected override void LoadContent()
@@ -122,12 +122,14 @@ public class PongGame : Game
     
     private void UpdateInGame(GameTime gameTime)
     {
+        // Ball collision and update
         if (_ball.Position.Y <= 0 ||
             _ball.Position.Y >= _graphics.GraphicsDevice.Viewport.Height - Globals.ballSize / 2f)
             _ball.MirrorAngle(false);
 
         _ball.Update(gameTime);
 
+        // Paddle health and update
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
         {
             _paddles[i].paddle.Update(gameTime);
@@ -136,7 +138,7 @@ public class PongGame : Game
                 Globals.gameState = GameState.GameOver;
             }
         }
-
+        
         if (_resizeTextTimeLeft > 0)
             _resizeTextTimeLeft -= gameTime.ElapsedGameTime.Milliseconds;
     }
@@ -201,12 +203,14 @@ public class PongGame : Game
             _graphics.PreferredBackBufferWidth = _prevWindowSize.Width;
             _graphics.PreferredBackBufferHeight = _prevWindowSize.Height;
             _graphics.ApplyChanges();
+            
+            Window.Position = new Point(_prevWindowSize.X, _prevWindowSize.Y);
 
             _resizeTextTimeLeft = 2000;
         }
         else
         {
-            _prevWindowSize = _graphics.GraphicsDevice.Viewport;
+            _prevWindowSize = new Rectangle(Window.Position.X, Window.Position.Y, _graphics.GraphicsDevice.Viewport.Width, _graphics.GraphicsDevice.Viewport.Height);
         }
     }
     
