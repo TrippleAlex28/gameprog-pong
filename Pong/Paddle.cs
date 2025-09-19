@@ -7,47 +7,49 @@ class Paddle
 {
   public const short borderPadding = 16; 
 
-  private PaddleMovementDirection paddleMovDir;
-  private Keys positiveMovKey;
-  private Keys negativeMovKey;
-  private Color paddleColor;
+  private PaddleMovementDirection _paddleMovDir;
+  private Keys _positiveMovKey;
+  private Keys _negativeMovKey;
+  private Color _paddleColor;
 
   // the constant position perpendicular to the movement axis
-  private short constantPos;
-  private bool IsFarSide;
-  private float paddleRotation;
-  private short clampMin;
-  private short clampMax;
+  private short _constantPos;
+  private bool _IsFarSide;
+  private float _paddleRotation;
+  private short _clampMin;
+  private short _clampMax;
 
   // Position along axis of movement
-  private short currentPos;
-  private Point drawPosition;
-  private Vector2 paddleOrigin;
+  private short _currentPos;
+
+  // Center of the paddle
+  private Point _drawPosition;
+  private Vector2 _paddleOrigin;
 
   public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
   {
-    this.paddleMovDir = paddleMovDir;
-    this.IsFarSide = IsFarSide;
-    this.positiveMovKey = positiveMovKey;
-    this.negativeMovKey = negativeMovKey;
-    this.paddleColor = paddleColor;
+    _paddleMovDir = paddleMovDir;
+    _IsFarSide = IsFarSide;
+    _positiveMovKey = positiveMovKey;
+    _negativeMovKey = negativeMovKey;
+    _paddleColor = paddleColor;
 
-    currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ? graphics.GraphicsDevice.Viewport.Height / 2 :graphics.GraphicsDevice.Viewport.Width / 2);
+    _currentPos = (short)(paddleMovDir == PaddleMovementDirection.Vertical ? graphics.GraphicsDevice.Viewport.Height / 2 :graphics.GraphicsDevice.Viewport.Width / 2);
 
     // assuming symmetrical paddle texture
-    paddleRotation = MathHelper.ToRadians(paddleMovDir == PaddleMovementDirection.Vertical ? 0.0f : 90.0f);
+    _paddleRotation = MathHelper.ToRadians(paddleMovDir == PaddleMovementDirection.Vertical ? 0.0f : 90.0f);
 
     // set paddle origin to the center of the texture
-    paddleOrigin.X = Globals.paddleSize.X / 2; 
-    paddleOrigin.Y = Globals.paddleSize.Y / 2;
+    _paddleOrigin.X = Globals.paddleSize.X / 2; 
+    _paddleOrigin.Y = Globals.paddleSize.Y / 2;
 
     // calculate constant position
     if (Globals.gameType == GameType.TwoPlayer) // always only vertical paddles & full field size
     {
       if (IsFarSide)
-        constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - borderPadding);
+        _constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - borderPadding);
       else
-        constantPos = borderPadding;
+        _constantPos = borderPadding;
     }
     else // four players
     {
@@ -56,37 +58,37 @@ class Paddle
         short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
 
         if (IsFarSide)
-          constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - sideBorderSize - borderPadding);
+          _constantPos = (short)(graphics.GraphicsDevice.Viewport.Width - sideBorderSize - borderPadding);
         else
-          constantPos = (short)(sideBorderSize + borderPadding);
+          _constantPos = (short)(sideBorderSize + borderPadding);
       }
       else // horizontal movement
       {
         if (IsFarSide)
-          constantPos = (short)(graphics.GraphicsDevice.Viewport.Height - borderPadding);
+          _constantPos = (short)(graphics.GraphicsDevice.Viewport.Height - borderPadding);
         else
-          constantPos = borderPadding;
+          _constantPos = borderPadding;
       }
     }
 
     // calculate movement clamps
     if (Globals.gameType == GameType.TwoPlayer)
     {
-      clampMin = (short)(Globals.paddleSize.Y / 2);
-      clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
+      _clampMin = (short)(Globals.paddleSize.Y / 2);
+      _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
     }
     else // 4p
     {
       if (paddleMovDir == PaddleMovementDirection.Vertical)
       {
-        clampMin = (short)(Globals.paddleSize.Y / 2);
-        clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
+        _clampMin = (short)(Globals.paddleSize.Y / 2);
+        _clampMax = (short)(graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
       }
       else // horizontal
       {
         short sideBorderSize = (short)((graphics.GraphicsDevice.Viewport.Width - graphics.GraphicsDevice.Viewport.Height) / 2);
-        clampMin = (short)(sideBorderSize + Globals.paddleSize.Y / 2);
-        clampMax = (short)(sideBorderSize + graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
+        _clampMin = (short)(sideBorderSize + Globals.paddleSize.Y / 2);
+        _clampMax = (short)(sideBorderSize + graphics.GraphicsDevice.Viewport.Height - Globals.paddleSize.Y / 2);
       }
     }
   }
@@ -94,45 +96,42 @@ class Paddle
   public void Update(Ball ball, GameTime gameTime)
   {
     // don't update when not participating
-    if (Globals.gameType == GameType.TwoPlayer && paddleMovDir == PaddleMovementDirection.Horizontal) return;
+    if (Globals.gameType == GameType.TwoPlayer && _paddleMovDir == PaddleMovementDirection.Horizontal) return;
 
     sbyte desiredMovDir = 0;
-    if (Keyboard.GetState().IsKeyDown(positiveMovKey))
+    if (Keyboard.GetState().IsKeyDown(_positiveMovKey))
       desiredMovDir++;
-    if (Keyboard.GetState().IsKeyDown(negativeMovKey))
+    if (Keyboard.GetState().IsKeyDown(_negativeMovKey))
       desiredMovDir--;
 
     // Rounded to integever because you can't move a sprite a fraction of a pixel
     short desiredMov = (short)(desiredMovDir * Globals.paddleSpeed * gameTime.ElapsedGameTime.TotalSeconds);
 
-    currentPos += desiredMov;
-    currentPos = (short)MathHelper.Clamp(currentPos, clampMin, clampMax);
+    _currentPos += desiredMov;
+    _currentPos = (short)MathHelper.Clamp(_currentPos, _clampMin, _clampMax);
 
-    drawPosition = new Point(
-      paddleMovDir == PaddleMovementDirection.Vertical ? constantPos : currentPos,
-      paddleMovDir == PaddleMovementDirection.Vertical ? currentPos : constantPos
+    _drawPosition = new Point(
+      _paddleMovDir == PaddleMovementDirection.Vertical ? _constantPos : _currentPos,
+      _paddleMovDir == PaddleMovementDirection.Vertical ? _currentPos : _constantPos
     );
 
     // handle ball collisions
-    if (ball.Position.X >= drawPosition.X)
-    {
-
-    }
+    
     
   }
 
   public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
   {
     // don't update when not participating
-    if (Globals.gameType == GameType.TwoPlayer && paddleMovDir == PaddleMovementDirection.Horizontal) return;
+    if (Globals.gameType == GameType.TwoPlayer && _paddleMovDir == PaddleMovementDirection.Horizontal) return;
     
     spriteBatch.Draw(
       Globals.paddleTexture,
-      new Rectangle(drawPosition, Globals.paddleSize),
+      new Rectangle(_drawPosition, Globals.paddleSize),
       null,
-      paddleColor,
-      paddleRotation,
-      paddleOrigin,
+      _paddleColor,
+      _paddleRotation,
+      _paddleOrigin,
       SpriteEffects.None,
       1
     );

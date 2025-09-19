@@ -12,26 +12,30 @@ public class Ball
 
     public Vector2 Position { get; private set; }
     public float Velocity { get; set; }
-    
+
     public Ball(Viewport viewport)
-    {
+    {   
         float angle = _rng.NextSingle() * 2f * float.Pi;
-        while ((angle > 1/3 * float.Pi && angle < 2/3 * float.Pi) || (angle > 4/3 * float.Pi && angle < 5/3 * float.Pi))
+        while ((angle > 1 / 3 * float.Pi && angle < 2 / 3 * float.Pi) || (angle > 4 / 3 * float.Pi && angle < 5 / 3 * float.Pi))
             angle = _rng.NextSingle() * 2f * float.Pi;
 
         SetAngle(angle);
         Position = ToCenter(viewport, new Vector2(Globals.ballSize));
-        Velocity = Globals.ballSpeedBase * viewport.Width / (float) Globals.ViewportSizeMultiplier;
+        Velocity = Globals.ballSpeedBase * viewport.Width / (float)Globals.ViewportSizeMultiplier;   
     }
 
     public void Update(GameTime gt)
     {
         Position += _angle * Velocity * (float) gt.ElapsedGameTime.TotalSeconds;
     }
-    
+
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
     {
-        spriteBatch.Draw(Globals.ballTexture, Position, Color.White);
+        spriteBatch.Draw(
+            Globals.ballTexture,
+            new Rectangle(new((int)Position.X, (int)Position.Y), new(Globals.ballSize)),
+            Color.White
+        );
     }
 
     /// <summary>
