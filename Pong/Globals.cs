@@ -37,6 +37,10 @@ class Globals
   public static short ballSpeedBase = 128;
   public static short ballSpeedIncrement = 32;
   
+  public const short heartDrawSize = 32;
+  public const short heartDrawGap = 8;
+  public const short heartEdgePadding = 16;
+  
   // Game initially was made for 720p resolution.
   // So if window is resized it is compared to initial value that was game made for and values are scaled.
   public const short ViewportSizeMultiplier = 1280;

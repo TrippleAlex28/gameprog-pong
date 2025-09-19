@@ -140,6 +140,7 @@ public class PongGame : Game
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
             _paddles[i].paddle.Update(gameTime);
+        
     }
     
     private void DrawInGame(GameTime gameTime)
@@ -153,10 +154,6 @@ public class PongGame : Game
     }
     private void DrawPaddleHearts()
     {
-        const short heartDrawSize = 32;
-        const short heartDrawGap = 8;
-        const short heartEdgePadding = 16;
-
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
         {
             Vector2 drawStartPos = new();
@@ -165,19 +162,19 @@ public class PongGame : Game
             switch (i)
             {
                 case 0:
-                    drawStartPos = new(heartEdgePadding, heartEdgePadding);
+                    drawStartPos = new(Globals.heartEdgePadding, Globals.heartEdgePadding);
                     drawDirection = 1;
                     break;
                 case 1:
-                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width - heartDrawSize - heartEdgePadding, heartEdgePadding);
+                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width - Globals.heartDrawSize - Globals.heartEdgePadding, Globals.heartEdgePadding);
                     drawDirection = -1;
                     break;
                 case 2:
-                    drawStartPos = new(heartEdgePadding, _graphics.GraphicsDevice.Viewport.Height - heartDrawSize - heartEdgePadding);
+                    drawStartPos = new(Globals.heartEdgePadding, _graphics.GraphicsDevice.Viewport.Height - Globals.heartDrawSize - Globals.heartEdgePadding);
                     drawDirection = 1;
                     break;
                 case 3:
-                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width - heartDrawSize - heartEdgePadding, _graphics.GraphicsDevice.Viewport.Height - heartDrawSize - heartEdgePadding);
+                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width - Globals.heartDrawSize - Globals.heartEdgePadding, _graphics.GraphicsDevice.Viewport.Height - Globals.heartDrawSize - Globals.heartEdgePadding);
                     drawDirection = -1;
                     break;
                 default:
@@ -188,12 +185,12 @@ public class PongGame : Game
             for (int j = 0; j < _paddles[i].health; j++)
             {
                 Point drawPos = new(
-                    (int)(drawStartPos.X + drawDirection * (j * (heartDrawGap + heartDrawSize))),
+                    (int)(drawStartPos.X + drawDirection * (j * (Globals.heartDrawGap + Globals.heartDrawSize))),
                     (int)drawStartPos.Y
                 );
                 _spriteBatch.Draw(
                     Globals.heartTexture,
-                    new Rectangle(drawPos, new(heartDrawSize)),
+                    new Rectangle(drawPos, new(Globals.heartDrawSize)),
                     Globals.playerColors[i]
                 );
             }
