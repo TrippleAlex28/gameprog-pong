@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,6 +9,8 @@ public class PongGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private Viewport _prevWindowSize;
+    private float _resizeTextTimeLeft;
 
     private Ball _ball;
     private (Paddle paddle, ushort health) [] _paddles = new(Paddle, ushort)[4];
@@ -18,11 +21,12 @@ public class PongGame : Game
 
         Window.Title = "Pong - 5463947 & 9392998";
         Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += Window_ClientSizeChanged;
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
-    
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -30,6 +34,8 @@ public class PongGame : Game
         _graphics.PreferredBackBufferWidth = 1280;
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.ApplyChanges();
+
+        _prevWindowSize = _graphics.GraphicsDevice.Viewport;
     }
 
     protected override void LoadContent()
@@ -44,8 +50,8 @@ public class PongGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Globals.gameState = GameState.MainMenu;
 
         switch (Globals.gameState)
         {
@@ -57,8 +63,6 @@ public class PongGame : Game
                 break;
             case GameState.GameOver:
                 UpdateGameOver(gameTime);
-                break;
-            default:
                 break;
         }
 
@@ -81,13 +85,13 @@ public class PongGame : Game
             case GameState.GameOver:
                 DrawGameOver(gameTime);
                 break;
-            default:
-                break;
         }
 
         _spriteBatch.End();
         base.Draw(gameTime);
     }
+    
+    #region MainMenu
 
     private void UpdateMainMenu(GameTime gameTime)
     {
@@ -111,25 +115,11 @@ public class PongGame : Game
         DrawStringInCenter(0, "Welkom bij PONG!");
         DrawStringInCenter(1, "Druk op <" + Globals.TwoPlayersKey.ToString().ToUpper() + "> voor 2 player of <" + Globals.FourPlayersKey.ToString().ToUpper() + "> voor 4 player om te beginnen!");
     }
-    private void OnGameStart()
-    {
-        Window.AllowUserResizing = false;
+    
+    #endregion
 
-        _ball = new Ball(_graphics.GraphicsDevice.Viewport);
-
-        _paddles[0].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
-        _paddles[0].health = Globals.playerBaseHealth;
-        _paddles[1].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
-        _paddles[1].health = Globals.playerBaseHealth;
-
-        if (Globals.gameType != GameType.FourPlayer) return;
-
-        _paddles[2].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
-        _paddles[2].health = Globals.playerBaseHealth;
-        _paddles[3].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
-        _paddles[3].health = Globals.playerBaseHealth;
-    }
-
+    #region InGame
+    
     private void UpdateInGame(GameTime gameTime)
     {
         if (_ball.Position.Y <= 0 ||
@@ -146,7 +136,9 @@ public class PongGame : Game
                 Globals.gameState = GameState.GameOver;
             }
         }
-        
+
+        if (_resizeTextTimeLeft > 0)
+            _resizeTextTimeLeft -= gameTime.ElapsedGameTime.Milliseconds;
     }
     
     private void DrawInGame(GameTime gameTime)
@@ -155,67 +147,70 @@ public class PongGame : Game
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
             _paddles[i].paddle.Draw(_spriteBatch, gameTime);
-
-        DrawPaddleHearts();
-    }
-    private void DrawPaddleHearts()
-    {
-        for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
+        
+        if (_resizeTextTimeLeft > 0) 
         {
-            Vector2 drawStartPos = new();
-            sbyte drawDirection = 0;
-
-            switch (i)
-            {
-                case 0:
-                    drawStartPos = new(Globals.heartEdgePadding, Globals.heartEdgePadding);
-                    drawDirection = 1;
-                    break;
-                case 1:
-                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width - Globals.heartDrawSize - Globals.heartEdgePadding, Globals.heartEdgePadding);
-                    drawDirection = -1;
-                    break;
-                case 2:
-                    drawStartPos = new(Globals.heartEdgePadding, _graphics.GraphicsDevice.Viewport.Height - Globals.heartDrawSize - Globals.heartEdgePadding);
-                    drawDirection = 1;
-                    break;
-                case 3:
-                    drawStartPos = new(_graphics.GraphicsDevice.Viewport.Width - Globals.heartDrawSize - Globals.heartEdgePadding, _graphics.GraphicsDevice.Viewport.Height - Globals.heartDrawSize - Globals.heartEdgePadding);
-                    drawDirection = -1;
-                    break;
-                default:
-                    Console.WriteLine("DrawPaddleHearts(): unhandled i in switch case");
-                    break;
-            }
-
-            for (int j = 0; j < _paddles[i].health; j++)
-            {
-                Point drawPos = new(
-                    (int)(drawStartPos.X + drawDirection * (j * (Globals.heartDrawGap + Globals.heartDrawSize))),
-                    (int)drawStartPos.Y
-                );
-                _spriteBatch.Draw(
-                    Globals.heartTexture,
-                    new Rectangle(drawPos, new(Globals.heartDrawSize)),
-                    Globals.playerColors[i]
-                );
-            }
+            String text = "You cannot resize when game is running";
+            _spriteBatch.DrawString(Globals.font, text, new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2f - Globals.font.MeasureString(text).X / 2f, 0), Globals.textColor);
         }
+        
+        Health.DrawPaddleHearts(_spriteBatch, _graphics.GraphicsDevice.Viewport, _paddles.Select(p => p.health).ToArray());
     }
+    
+    #endregion
 
-    private void UpdateGameOver(GameTime gameTime)
-    {
-        if (Keyboard.GetState().IsKeyDown(Globals.ResetKey))
-        {
-            Window.AllowUserResizing = true;
-            Globals.gameState = GameState.MainMenu;
-        }
-    }
+    #region GameOver
+    
+    private void UpdateGameOver(GameTime gameTime) { }
     
     private void DrawGameOver(GameTime gameTime)
     {
         DrawStringInCenter(0, "Game over, press <" + Globals.ResetKey.ToString().ToUpper() + "> to exit to Main Menu");
     }
+    
+    #endregion
+
+    #region Events
+    
+    private void Window_ClientSizeChanged(object sender, EventArgs e) => OnWindowResize();
+    
+    private void OnGameStart()
+    {
+        //Window.AllowUserResizing = false;
+
+        _ball = new Ball(_graphics.GraphicsDevice.Viewport);
+
+        _paddles[0].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
+        _paddles[0].health = Globals.playerBaseHealth;
+        _paddles[1].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
+        _paddles[1].health = Globals.playerBaseHealth;
+
+        if (Globals.gameType != GameType.FourPlayer) return;
+
+        _paddles[2].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
+        _paddles[2].health = Globals.playerBaseHealth;
+        _paddles[3].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
+        _paddles[3].health = Globals.playerBaseHealth;
+    }
+    
+    private void OnWindowResize()
+    {
+        if (Globals.gameState == GameState.InGame)
+        {
+            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = _prevWindowSize.Width;
+            _graphics.PreferredBackBufferHeight = _prevWindowSize.Height;
+            _graphics.ApplyChanges();
+
+            _resizeTextTimeLeft = 2000;
+        }
+        else
+        {
+            _prevWindowSize = _graphics.GraphicsDevice.Viewport;
+        }
+    }
+    
+    #endregion
         
     private void DrawStringInCenter(short row, string text)
     {

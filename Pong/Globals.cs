@@ -16,7 +16,7 @@ class Globals
 
     public const Keys TwoPlayersKey = Keys.F2;
     public const Keys FourPlayersKey = Keys.F4;
-    public const Keys ResetKey = Keys.Space;
+    public const Keys ResetKey = Keys.Escape;
 
     public static Color backgroundColor = Color.White;
     public static Color textColor = Color.Black;

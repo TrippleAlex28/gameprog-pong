@@ -6,7 +6,6 @@ namespace Pong;
 
 public class Ball
 {
-
     private Random _rng = new();
     private Vector2 _angle;
 
@@ -16,7 +15,7 @@ public class Ball
     public Ball(Viewport viewport)
     {
         float angle = _rng.NextSingle() * 2f * float.Pi;
-        while ((angle > 1/3 * float.Pi && angle < 2/3 * float.Pi) || (angle > 4/3 * float.Pi && angle < 5/3 * float.Pi))
+        while ((angle > 1/3f * float.Pi && angle < 2/3f * float.Pi) || (angle > 4/3f * float.Pi && angle < 5/3f * float.Pi))
             angle = _rng.NextSingle() * 2f * float.Pi;
 
         SetAngle(angle);
