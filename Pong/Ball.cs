@@ -17,7 +17,7 @@ public class Ball
     {
         SetAngle(_rng.NextSingle() * 2f * float.Pi);
         Position = ToCenter(viewport, new Vector2(Globals.ballSize));
-        Velocity = Globals.ballSpeedBase * viewport.Width / Globals.ViewportSizeMultiplier;
+        Velocity = Globals.ballSpeedBase * viewport.Width / (float) Globals.ViewportSizeMultiplier;
     }
 
     public void Update(GameTime gt)
