@@ -9,8 +9,8 @@ public class PongGame : Game
     private SpriteBatch _spriteBatch;
 
     private Ball _ball;
-    private Paddle[] _paddles = new Paddle[4];
-
+    private (Paddle paddle, int health) [] _paddles = new(Paddle, int)[4];
+    
     public PongGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -37,6 +37,7 @@ public class PongGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         Globals.paddleTexture = Content.Load<Texture2D>("sprites/paddle");
+        Globals.heartTexture = Content.Load<Texture2D>("sprites/heart.png");
         Globals.ballTexture = Content.Load<Texture2D>("sprites/ball");
         Globals.font = Content.Load<SpriteFont>("default_font");
     }
@@ -103,13 +104,17 @@ public class PongGame : Game
 
     private void OnGameStart()
     {
-        _paddles[0] = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
-        _paddles[1] = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
+        _paddles[0].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, false, Keys.S, Keys.W, Globals.playerColors[0]);
+        _paddles[0].health = Globals.playerBaseHealth;
+        _paddles[1].paddle = new Paddle(_graphics, PaddleMovementDirection.Vertical, true, Keys.Down, Keys.Up, Globals.playerColors[1]);
+        _paddles[1].health = Globals.playerBaseHealth;
 
         if (Globals.gameType == GameType.FourPlayer)
         {
-            _paddles[2] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
-            _paddles[3] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
+            _paddles[2].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
+            _paddles[2].health = Globals.playerBaseHealth;
+            _paddles[3].paddle = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
+            _paddles[3].health = Globals.playerBaseHealth;
         }   
     }
     private void UpdateInGame(GameTime gameTime)
@@ -120,16 +125,15 @@ public class PongGame : Game
 
         _ball.Update(gameTime);
 
-
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
-            _paddles[i].Update(gameTime);
+            _paddles[i].paddle.Update(gameTime);
     }
     private void DrawInGame(GameTime gameTime)
     {
         _ball.Draw(_spriteBatch, gameTime);
 
         for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
-            _paddles[i].Draw(_spriteBatch, gameTime);
+            _paddles[i].paddle.Draw(_spriteBatch, gameTime);
     }
     private void UpdateGameOver(GameTime gameTime)
     {

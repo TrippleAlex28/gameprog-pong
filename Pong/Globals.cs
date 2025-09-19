@@ -6,6 +6,7 @@ namespace Pong;
 class Globals
 {
   public static Texture2D paddleTexture;
+  public static Texture2D heartTexture;
   public static Texture2D ballTexture;
   public static SpriteFont font;
 
@@ -24,6 +25,8 @@ class Globals
     Color.Green,
     Color.Pink
   ];
+
+  public const int playerBaseHealth = 3;
 
   public static readonly Point paddleSize = new Point(8, 48);
   public const short ballSize = 24;
