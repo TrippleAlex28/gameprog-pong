@@ -9,7 +9,7 @@ public class PongGame : Game
     private SpriteBatch _spriteBatch;
 
     private Ball _ball;
-    private Paddle[] _paddles;
+    private Paddle[] _paddles = new Paddle[4];
 
     public PongGame()
     {
@@ -110,7 +110,6 @@ public class PongGame : Game
         {
             _paddles[2] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, false, Keys.I, Keys.U, Globals.playerColors[2]);
             _paddles[3] = new Paddle(_graphics, PaddleMovementDirection.Horizontal, true, Keys.B, Keys.V, Globals.playerColors[3]);
-
         }   
     }
     private void UpdateInGame(GameTime gameTime)
@@ -120,10 +119,17 @@ public class PongGame : Game
             _ball.MirrorAngle(false);
 
         _ball.Update(gameTime);
+
+
+        for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
+            _paddles[i].Update(gameTime);
     }
     private void DrawInGame(GameTime gameTime)
     {
         _ball.Draw(_spriteBatch, gameTime);
+
+        for (int i = 0; i < _paddles.Length && i < (Globals.gameType == GameType.TwoPlayer ? 2 : 4); i++)
+            _paddles[i].Draw(_spriteBatch, gameTime);
     }
     private void UpdateGameOver(GameTime gameTime)
     {

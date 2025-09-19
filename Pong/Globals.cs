@@ -29,7 +29,7 @@ class Globals
   public const short ballSize = 24;
 
   // Speed is measured in pixels per second
-  public static short paddleSpeed = 896;
+  public static short paddleSpeed = 256;
   public static short ballSpeedBase = 128;
   public static short ballSpeedIncrement = 32;
 }

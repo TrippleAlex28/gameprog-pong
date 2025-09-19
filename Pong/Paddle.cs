@@ -113,7 +113,7 @@ class Paddle
     );
   }
 
-  public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+  public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
   {
     // don't update when not participating
     if (Globals.gameType == GameType.TwoPlayer && paddleMovDir == PaddleMovementDirection.Horizontal) return;
