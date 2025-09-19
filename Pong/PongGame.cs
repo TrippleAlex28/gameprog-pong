@@ -151,7 +151,6 @@ public class PongGame : Game
 
         DrawPaddleHearts();
     }
-    bool firstTime = false;
     private void DrawPaddleHearts()
     {
         const short heartDrawSize = 32;
@@ -197,14 +196,8 @@ public class PongGame : Game
                     new Rectangle(drawPos, new(heartDrawSize)),
                     Globals.playerColors[i]
                 );
-
-                if (!firstTime)
-                {
-                    Console.WriteLine("Draw Heart: I = " + i + " J = " + j);
-                }
             }
         }
-        firstTime = true;
     }
 
     private void UpdateGameOver(GameTime gameTime)
