@@ -1,4 +1,5 @@
 namespace Pong;
+
 public enum GameState
 {
   MainMenu,

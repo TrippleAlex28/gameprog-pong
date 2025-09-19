@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Pong;
+
 class Globals
 {
   public static Texture2D paddleTexture;
@@ -17,7 +18,6 @@ class Globals
   public const Keys ResetKey = Keys.Space;
 
   public static Color backgroundColor = Color.White;
-  // public static Texture2D backgroundTexture;
   public static Color textColor = Color.Black;
   public static Color[] playerColors = [
     Color.Blue,

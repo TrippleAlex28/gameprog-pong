@@ -7,22 +7,22 @@ class Paddle
 {
   public const short borderPadding = 16; 
 
-  PaddleMovementDirection paddleMovDir;
-  Keys positiveMovKey;
-  Keys negativeMovKey;
-  Color paddleColor;
+  private PaddleMovementDirection paddleMovDir;
+  private Keys positiveMovKey;
+  private Keys negativeMovKey;
+  private Color paddleColor;
 
   // the constant position perpendicular to the movement axis
-  short constantPos;
-  bool IsFarSide;
-  float paddleRotation;
-  short clampMin;
-  short clampMax;
+  private short constantPos;
+  private bool IsFarSide;
+  private float paddleRotation;
+  private short clampMin;
+  private short clampMax;
 
   // Position along axis of movement
-  short currentPos;
-  Point drawPosition;
-  Vector2 paddleOrigin;
+  private short currentPos;
+  private Point drawPosition;
+  private Vector2 paddleOrigin;
 
   public Paddle(GraphicsDeviceManager graphics, PaddleMovementDirection paddleMovDir, bool IsFarSide, Keys positiveMovKey, Keys negativeMovKey, Color paddleColor)
   {
