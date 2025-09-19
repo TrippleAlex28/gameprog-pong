@@ -128,18 +128,25 @@ class Paddle
     // Prevent the ball from going straight ahead (booooriiiing)
     if (!_IsFarSide)
     {
+      baseAngle = Utils.NormalizeSignedAngleDeg(baseAngle);
       if (baseAngle > 0 && baseAngle < _ballRedirectMinAngle) baseAngle = _ballRedirectMinAngle;
       if (baseAngle < 0 && baseAngle > -_ballRedirectMinAngle) baseAngle = -_ballRedirectMinAngle;
     }
     else
     {
+      baseAngle = Utils.NormalizeSignedAngleDeg(baseAngle - 180f);
       if (baseAngle > 0 && baseAngle < _ballRedirectMinAngle) baseAngle = 180f - _ballRedirectMinAngle;
       if (baseAngle < 0 && baseAngle > -_ballRedirectMinAngle) baseAngle = 180f - -_ballRedirectMinAngle;
     }
 
-    // TODO: If you hit the ball dead center on your paddle, perfect hit mechanic 
-    if (baseAngle == 0) Console.WriteLine("PERFECT HIT");
 
+    // TODO: If you hit the ball dead center on your paddle, perfect hit mechanic 
+    if (baseAngle == 0)
+    {
+      Console.WriteLine("PERFECT HIT");
+      if (_IsFarSide) baseAngle = -180f;
+    }  
+      
     // Mix new angle and old angle to smoothen out the bounces
     float newAngle = MathHelper.Lerp(baseAngle, prevBallAngle, _ballPrevAngleImpact);
 

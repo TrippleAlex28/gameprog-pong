@@ -21,6 +21,7 @@ public class Ball
         float angle = _rng.NextSingle() * 2f * float.Pi;
         while ((angle > 1 / 3 * float.Pi && angle < 2 / 3 * float.Pi) || (angle > 4 / 3 * float.Pi && angle < 5 / 3 * float.Pi))
             angle = _rng.NextSingle() * 2f * float.Pi;
+            
         SetAngleDeg(angle);
 
         Position = ToCenter(viewport, new Vector2(Globals.baseBallSize));
@@ -37,7 +38,7 @@ public class Ball
         spriteBatch.Draw(
             Globals.ballTexture,
             new Rectangle(new((int)Position.X, (int)Position.Y), DrawSize),
-            Globals.playerColors[_lastBouncePlayerId]
+            (_lastBouncePlayerId == -1 ? Color.White : Globals.playerColors[_lastBouncePlayerId])
         );
     }
 

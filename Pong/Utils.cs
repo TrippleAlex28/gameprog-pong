@@ -9,6 +9,11 @@ class Utils
     {
         return (angle % 360f + 360f) % 360f;
     }
+
+    public static float NormalizeSignedAngleDeg(float angle)
+    {
+        return ((angle + 540f) % 360f) - 180f;
+    }
     
     /// <summary>
     /// Are rectangle A & B colliding
